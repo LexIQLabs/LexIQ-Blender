@@ -191,3 +191,25 @@ success:
   - "Let me walk you through our top-performing success sequence for {pain_point}."
   - "If I can show ROI from fixing {pain_point}, would you trial this approach?"
 
+gpt_prompt_templates:
+  sales:
+    - "Client said: '{pain_point}'. My goal is to {desired_outcome}. Expand this message: '{blended_line}' into a persuasive and confident reply."
+    - "They’re objecting due to '{pain_point}', but I need to get them to {desired_outcome}. Write a strong sales message using: '{blended_line}'."
+    - "Prospect is hesitant because of '{pain_point}'. I want to drive them to {desired_outcome}. Build on this line: '{blended_line}' with urgency and clarity."
+    - "They raised an objection: '{pain_point}'. I want to flip it and close the deal. Expand this: '{blended_line}'."
+    - "Lead concern: '{pain_point}'. Outcome goal: {desired_outcome}. Turn '{blended_line}' into a persuasive sales pitch."
+
+  support:
+    - "A customer is upset because '{pain_point}'. I want to {desired_outcome}. Use this line: '{blended_line}' and expand it into an empathetic and reassuring response."
+    - "They’re frustrated about '{pain_point}'. Help me write a calm, clear, and helpful message starting with: '{blended_line}'."
+    - "Issue reported: '{pain_point}'. My goal is to {desired_outcome}. Use this line: '{blended_line}' and expand it into a trust-restoring message."
+    - "Customer dissatisfaction due to '{pain_point}'. Expand '{blended_line}' into a reply that soothes and resolves."
+    - "They’re experiencing '{pain_point}'. My goal is {desired_outcome}. Build a message from: '{blended_line}' that rebuilds trust."
+
+  success:
+    - "A client is facing '{pain_point}'. I want to guide them to {desired_outcome}. Expand: '{blended_line}' into a strategic message that increases MRR."
+    - "They’re hesitating due to '{pain_point}'. I want to align on value and move them toward {desired_outcome}. Use this opening: '{blended_line}'."
+    - "Client concern: '{pain_point}'. I want to create a message that pushes them toward {desired_outcome}. Start with: '{blended_line}'."
+    - "Account is stalled due to '{pain_point}'. Expand '{blended_line}' into a value-focused suggestion that drives retention."
+    - "They’re slow to expand because of '{pain_point}'. Build a growth-focused message using: '{blended_line}' to guide toward {desired_outcome}."
+
