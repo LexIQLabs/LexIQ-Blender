@@ -16,20 +16,20 @@ HEADER_HTML = """
 """
 st.markdown(HEADER_HTML, unsafe_allow_html=True)
 
-# ─────────────────────────────  LOGIN  ──────────────────────────────── #
+# ─────────────────────────────  LOGIN FIX  ───────────────────────────── #
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
 
 if not st.session_state["authenticated"]:
-    with st.form("login_form"):
-        st.markdown("### 🔐 Secure Access")
-        pwd = st.text_input("Access code", type="password", placeholder="Enter your passcode")
-        if st.form_submit_button("Login"):
-            if pwd == "DEMO2025":  # ← set your code here
-                st.session_state["authenticated"] = True
-                st.success("✅ Access granted – scroll down to begin.")
-            else:
-                st.error("❌ Invalid code. Try again.")
+    st.markdown("### 🔐 Secure Access")
+    password_input = st.text_input("Access code", type="password", placeholder="Enter your passcode")
+
+    if st.button("Login"):
+        if password_input == "DEMO2025":  # ← Set your code here
+            st.session_state["authenticated"] = True
+            st.experimental_rerun()  # Immediately reload to show app
+        else:
+            st.error("❌ Invalid code. Try again.")
     st.stop()
 
 # ──────────────────────────────── MAIN APP ─────────────────────────────── #
@@ -47,15 +47,15 @@ if st.session_state["authenticated"]:
         st.error(f"Could not load prompts.yaml → {err}")
         st.stop()
 
-    # ──────────────────────────────  FORM  ─────────────────────────────── #
+    # ────────────────────────────── FORM ─────────────────────────────── #
     st.markdown("### ✍️  Enter Context")
 
     with st.form("context"):
         col1, col2 = st.columns(2)
         with col1:
-            pain_point      = st.text_input("Objection / Pain Point*",  placeholder="“It’s too expensive”")
-            desired_outcome = st.text_input("Your Goal*",               placeholder="“Show ROI & close deal”")
-            prospect_name   = st.text_input("Prospect Name (optional)", placeholder="Jordan")
+            raw_pain_point    = st.text_input("Objection / Pain Point*",  placeholder="“It’s too expensive”")
+            raw_desired_outcome = st.text_input("Your Goal*",             placeholder="“Show ROI & close deal”")
+            prospect_name     = st.text_input("Prospect Name (optional)", placeholder="Jordan")
         with col2:
             with st.expander("🔧 Advanced  (optional)"):
                 goal_date        = st.text_input("Goal Date",           placeholder="30 July")
@@ -70,14 +70,27 @@ if st.session_state["authenticated"]:
 
         submitted = st.form_submit_button("🔮  Blend Prompts")
 
-    # ─────────────────────────────  GENERATE  ───────────────────────────── #
+    # ───────────────────────────── UTILITIES ───────────────────────────── #
+    def rephrase_pain(p):
+        if not p: return "an issue"
+        p = p.strip()
+        return p if len(p.split()) > 4 or p.lower().startswith("the ") else f"issues like {p.lower()}"
+
+    def clean_goal(goal):
+        g = goal.strip()
+        return f"to {g[0].lower() + g[1:]}" if not g.lower().startswith("to ") else g
+
+    # ───────────────────────────── GENERATION ───────────────────────────── #
     if submitted:
         st.success("Prompts generated – copy & paste into ChatGPT")
         st.markdown("---")
 
+        pain_point_clean   = rephrase_pain(raw_pain_point)
+        desired_outcome_clean = clean_goal(raw_desired_outcome)
+
         ctx = {
-            "pain_point": pain_point,
-            "desired_outcome": desired_outcome,
+            "pain_point": pain_point_clean,
+            "desired_outcome": desired_outcome_clean,
             "prospect_name": prospect_name or "your prospect",
             "wait_period": wait_period,
             "goal_date": goal_date,
@@ -94,7 +107,7 @@ if st.session_state["authenticated"]:
             "feature_z": "Lead Tracker",
             "number_of_clients": "25",
             "framework_name": "Value Hook",
-            "positioning_strategy": "pain‑solution framing",
+            "positioning_strategy": "pain-solution framing",
             "tactic_x": "generic outreach",
             "sales_channel": "email outreach",
             "new_wait_period": "48 hours",
