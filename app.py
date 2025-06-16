@@ -7,20 +7,22 @@ st.set_page_config(page_title="LexIQ Labs - Prompt Blender", layout="centered")
 st.markdown("<h1 style='text-align:center;'>🧠 LexIQ Labs | AI-Personalized Prompt Blender</h1>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# --- AUTH ---
+# --- AUTH CHECK ---
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
 
+# --- PASSWORD FORM ---
 if not st.session_state["authenticated"]:
     st.markdown("### 🔐 Secure Access")
-    password = st.text_input("Enter Access Code", type="password")
-    if st.button("Login"):
-        if password == "DEMO2025":
-            st.session_state["authenticated"] = True
-            st.success("✅ Access granted. Welcome to LexIQ Labs.")
-            st.experimental_rerun()
-        else:
-            st.error("❌ Invalid access code. Please try again.")
+    with st.form("login_form"):
+        password = st.text_input("Enter Access Code", type="password")
+        submitted = st.form_submit_button("Login")
+        if submitted:
+            if password == "DEMO2025":
+                st.session_state["authenticated"] = True
+                st.success("✅ Access granted. Scroll down to begin.")
+            else:
+                st.error("❌ Invalid access code.")
     st.stop()
 
 # --- CATEGORY SELECTION ---
@@ -54,16 +56,15 @@ with st.form("input_form"):
         impact_percent = st.text_input("Impact Percent", "30%")
         team_name = st.text_input("Team Name", "Growth Team")
 
-    # Hidden/advanced context inputs
     module_x = st.text_input("Module/Feature X", "Automation Suite")
     solution_x = st.text_input("Solution/Strategy X", "One-click Deploy")
 
-    submitted = st.form_submit_button("🔮 Blend Prompts")
+    generate = st.form_submit_button("🔮 Blend Prompts")
 
-# --- BLENDING ---
-if submitted:
+# --- GENERATE PROMPTS ---
+if generate:
     selected = random.sample(fragments, 5)
-    st.success("✅ Prompts successfully generated below!")
+    st.success("✅ Prompts successfully generated!")
 
     for i, frag in enumerate(selected, 1):
         try:
@@ -102,8 +103,7 @@ if submitted:
             f"Then expand with context, resolve {pain_point}, and include a clear CTA before closing."
         )
 
-        with st.container():
-            st.markdown(f"---\n### 🔹 Prompt {i}")
-            st.markdown(f"**🧠 Blended Line:**\n> {blended}")
-            st.markdown("**💬 ChatGPT Expansion Prompt:**")
-            st.code(chatgpt_prompt, language="markdown")
+        st.markdown(f"---\n### 🔹 Prompt {i}")
+        st.markdown(f"**🧠 Blended Line:**\n> {blended}")
+        st.markdown("**💬 ChatGPT Expansion Prompt:**")
+        st.code(chatgpt_prompt, language="markdown")
