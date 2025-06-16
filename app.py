@@ -3,20 +3,19 @@ import yaml
 import random
 from datetime import date
 
-# ──────────────────────────────  CONFIG  ────────────────────────────── #
+# ────────────────────────────── CONFIG ────────────────────────────── #
 st.set_page_config(page_title="LexIQ Labs – Prompt Blender", layout="centered")
 
-HEADER_HTML = """
+st.markdown("""
 <h1 style="text-align:center;margin-bottom:0.2em;">
-  🧠 LexIQ Labs | Prompt Blender
+  🧠 LexIQ Labs | Prompt Blender
 </h1>
 <p style="text-align:center;font-size:0.9rem;color:#888;">
-  Turn sales objections &amp; customer hurdles into persuasive AI messages
+  Turn objections &amp; concerns into persuasive AI-ready messages
 </p><hr style="margin-top:0.2em;">
-"""
-st.markdown(HEADER_HTML, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-# ─────────────────────────────  LOGIN FIX  ───────────────────────────── #
+# ─────────────────────── LOGIN (NO RERUN) ───────────────────────── #
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
 
@@ -25,9 +24,9 @@ if not st.session_state["authenticated"]:
     password_input = st.text_input("Access code", type="password", placeholder="Enter your passcode")
 
     if st.button("Login"):
-        if password_input == "DEMO2025":  # ← Set your code here
+        if password_input == "DEMO2025":
             st.session_state["authenticated"] = True
-            st.experimental_rerun()  # Immediately reload to show app
+            st.success("✅ Access granted – scroll down to begin.")
         else:
             st.error("❌ Invalid code. Try again.")
     st.stop()
@@ -53,11 +52,11 @@ if st.session_state["authenticated"]:
     with st.form("context"):
         col1, col2 = st.columns(2)
         with col1:
-            raw_pain_point    = st.text_input("Objection / Pain Point*",  placeholder="“It’s too expensive”")
-            raw_desired_outcome = st.text_input("Your Goal*",             placeholder="“Show ROI & close deal”")
-            prospect_name     = st.text_input("Prospect Name (optional)", placeholder="Jordan")
+            raw_pain_point      = st.text_input("Objection / Pain Point*", placeholder="“It’s too expensive”")
+            raw_desired_outcome = st.text_input("Your Goal*", placeholder="“Show ROI & close deal”")
+            prospect_name       = st.text_input("Prospect Name (optional)", placeholder="Jordan")
         with col2:
-            with st.expander("🔧 Advanced  (optional)"):
+            with st.expander("🔧 Advanced (optional)"):
                 goal_date        = st.text_input("Goal Date",           placeholder="30 July")
                 future_timeline  = st.text_input("Future Timeline",     placeholder="60 days")
                 added_revenue    = st.text_input("Added Revenue",       placeholder="$10,000")
@@ -70,9 +69,10 @@ if st.session_state["authenticated"]:
 
         submitted = st.form_submit_button("🔮  Blend Prompts")
 
-    # ───────────────────────────── UTILITIES ───────────────────────────── #
+    # ───────────────────── TEXT NORMALIZATION ───────────────────── #
     def rephrase_pain(p):
-        if not p: return "an issue"
+        if not p:
+            return "an issue"
         p = p.strip()
         return p if len(p.split()) > 4 or p.lower().startswith("the ") else f"issues like {p.lower()}"
 
@@ -85,7 +85,7 @@ if st.session_state["authenticated"]:
         st.success("Prompts generated – copy & paste into ChatGPT")
         st.markdown("---")
 
-        pain_point_clean   = rephrase_pain(raw_pain_point)
+        pain_point_clean      = rephrase_pain(raw_pain_point)
         desired_outcome_clean = clean_goal(raw_desired_outcome)
 
         ctx = {
